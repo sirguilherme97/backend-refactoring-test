@@ -862,14 +862,14 @@
         document.addEventListener('DOMContentLoaded', function () {
             const usersList = document.getElementById('users-list');
             usersList.innerHTML = '<div style="color:#FF2D20">Carregando usuários...</div>';
-            fetch('/api/users')
+            fetch('{{ route("api.users.index") }}')
                 .then(response => response.json())
                 .then(data => {
                     if (!Array.isArray(data)) {
                         usersList.innerHTML = '<span style="color:red">Formato de dados inválido</span>';
                         return;
                     }
-                    fetch('/render-users', {
+                    fetch('{{ route("users.render") }}', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -902,35 +902,52 @@
                 window.saveEditUser = function (id) {
                     const name = document.getElementById('edit-name-' + id).value;
                     const email = document.getElementById('edit-email-' + id).value;
-                    fetch(`/api/users/${id}`, {
+                    fetch(`{{ url('api/users') }}/${id}`, {
                         method: 'PUT',
                         headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({ name, email })
                     })
                         .then(response => {
-                            if (!response.ok) throw new Error('Erro ao atualizar usuário');
+                            if (!response.ok) {
+                                console.error('Status:', response.status);
+                                console.error('Status Text:', response.statusText);
+                                return response.text().then(text => {
+                                    throw new Error(`Erro ${response.status}: ${text}`);
+                                });
+                            }
                             return response.json();
                         })
                         .then(() => location.reload())
-                        .catch(err => alert(err.message));
+                        .catch(err => {
+                            console.error('Erro completo:', err);
+                            alert('Erro ao atualizar usuário: ' + err.message);
+                        });
                 };
                 window.deleteUser = function (id) {
                     if (!confirm('Tem certeza que deseja excluir este usuário?')) return;
-                    fetch(`/api/users/${id}`, {
+                    fetch(`{{ url('api/users') }}/${id}`, {
                         method: 'DELETE',
                         headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            'Content-Type': 'application/json'
                         }
                     })
                         .then(response => {
-                            if (!response.ok) throw new Error('Erro ao excluir usuário');
+                            if (!response.ok) {
+                                console.error('Status:', response.status);
+                                console.error('Status Text:', response.statusText);
+                                return response.text().then(text => {
+                                    throw new Error(`Erro ${response.status}: ${text}`);
+                                });
+                            }
                             return response.json();
                         })
                         .then(() => location.reload())
-                        .catch(err => alert(err.message));
+                        .catch(err => {
+                            console.error('Erro completo:', err);
+                            alert('Erro ao excluir usuário: ' + err.message);
+                        });
                 };
         });
     </script>

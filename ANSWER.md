@@ -8,6 +8,7 @@
 [x] Criar Services para isolar a lógica de negócio, reduzindo a carga dos Controllers.
 [x] Refatorar Controllers para delegar regras de negócio aos Services, mantendo-os focados em tratar requisições e respostas.
 [x] Utilizar Request/FormData para validações e criação de mensagens interativas, retirando do Service a responsabilidade de validar informações.
+[x] Utilização de Names nas Rotas para evitar conflitos em futuras mudanças
 
 ### FrontEnd
 [x] Testar todas as funcionalidades implementadas

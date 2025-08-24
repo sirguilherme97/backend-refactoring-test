@@ -946,14 +946,15 @@
             const name = form.name.value;
             const email = form.email.value;
             const password = form.password.value;
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             clearErrors();
+
+            const url = '{{ url("api/users") }}';
+
             try {
-                const response = await fetch('api/users', {
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ name, email, password })
                 });
@@ -964,7 +965,7 @@
                     data = null;
                 }
                 if (response.ok) {
-                    window.location.href = '/user';
+                    window.location.href = '{{ route("user.page") }}';
                 } else if (data && data.errors) {
                     if (data.errors.name) {
                         document.getElementById('error-name').textContent = data.errors.name[0];
@@ -977,9 +978,13 @@
                     }
                 } else if (data && data.message) {
                     document.getElementById('error-name').textContent = data.message;
+                } else {
+                    console.error('Resposta não esperada:', response.status, response.statusText);
+                    document.getElementById('error-name').textContent = `Erro ${response.status}: ${response.statusText}`;
                 }
             } catch (error) {
-                document.getElementById('error-name').textContent = 'Erro ao enviar: ' + error;
+                console.error('Erro na requisição:', error);
+                document.getElementById('error-name').textContent = 'Erro ao enviar: ' + error.message;
             }
         }
     </script>

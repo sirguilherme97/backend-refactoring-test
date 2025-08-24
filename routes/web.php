@@ -15,25 +15,26 @@ use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 Route::get('/user', function () {
     return view('userPage');
-});
+})->name('user.page');
+
 Route::get('/users', function () {
     return view('users');
-});
+})->name('users.index');
 
-Route::post('/users', [UserController::class, 'store']);
+Route::post('/users', [UserController::class, 'store'])->name('users.store');
 
 Route::get('/createUser', function () {
     return view('createUser');
-});
+})->name('users.create');
 
 Route::post('/render-users', function (\Illuminate\Http\Request $request) {
     $users = $request->input('users', []);
     return view('components.usersList', compact('users'))->render();
-});
+})->name('users.render');
 
 
 
