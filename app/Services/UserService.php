@@ -2,16 +2,18 @@
 
 namespace App\Services;
 
+use App\Contracts\Services\UserServiceInterface;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
-class UserService
+class UserService implements UserServiceInterface
 {
     /**
      * Get all users.
      *
      * @return \Illuminate\Database\Eloquent\Collection<User>
      */
-    public function getAllUsers()
+    public function getAllUsers(): Collection
     {
         return User::all();
     }
@@ -22,7 +24,7 @@ class UserService
      * @param int $id
      * @return User|null
      */
-    public function getUserById(int $id)
+    public function getUserById(int $id): ?User
     {
         return User::find($id);
     }
@@ -33,7 +35,7 @@ class UserService
      * @param array{name: string, email: string, password: string} $data
      * @return User
      */
-    public function createUser(array $data)
+    public function createUser(array $data): User
     {
         return User::create($data);
     }
@@ -60,7 +62,7 @@ class UserService
      * @param int $id
      * @return bool
      */
-    public function deleteUser(int $id)
+    public function deleteUser(int $id): bool
     {
         $user = User::find($id);
         if ($user) {
